@@ -7,32 +7,26 @@ class SubredditStore {
   @observable success = false
   @observable error = false
 
-  @action fetch (offset) {
-    this.requesting()
+  @action loadItems (offset) {
+    this.requesting = true;
+    this.success = false;
+    this.error = false
 
-    return fetch('localhost:3000/api/subreddits')
+    return fetch('http://localhost:3000/api/subreddits')
       .then(response => response.json())
-      .then(items => this.items = items)
-      .then(() => this.offset += 20)
-  }
-
-  @action requesting () {
-    this.requesting = true
-    this.success = false
-    this.error = false
-  }
-
-  @action success () {
-    this.requesting = false
-    this.success = true
-    this.error = false
-  }
-
-  @action error (msg) {
-    this.requesting = false
-    this.success = false
-    this.error = msg
+      .then(items => {
+        this.items = items
+        this.offset += 20
+        this.requesting = false
+        this.success = true
+        this.error = false
+      })
+      .catch(err => {
+        this.requesting = false
+        this.success = false
+        this.errro = err.message
+      })
   }
 }
 
-module.exports = new SubredditStore()
+export default new SubredditStore()

@@ -18,8 +18,14 @@ jobs:
       - run:
           name: Token replace
           command: |
-            envsubst < .circleci/.env > .env
+            envsubst < ./.circleci/.env.placeholder > .env
             cat .env
+      - run:
+          name: Install
+          command: npm i
+      - run:
+          name: Build
+          command: npm run build
 
 workflows:
   version: 2

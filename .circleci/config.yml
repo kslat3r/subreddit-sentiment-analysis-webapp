@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Setup deps
+          command: apt-get install -qq -y gettext
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            echo $GOOGLE_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project subreddit-sentiment-analysis
+            gcloud --quiet config set compute/zone europe-west2-a
+      - run:
+          name: Token replace
+          command: |
+            envsubst < .circleci/.env > .env
+            cat .env
+
+workflows:
+  version: 2
+  release:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: master

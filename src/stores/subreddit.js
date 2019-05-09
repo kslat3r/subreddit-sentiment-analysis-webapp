@@ -12,7 +12,7 @@ class SubredditStore {
     this.success = false;
     this.error = false
 
-    return fetch(`${process.env.API_HOST}/api/subreddits`)
+    return fetch(`${process.env.REACT_APP_API_HOST}/api/subreddits`)
       .then(response => response.json())
       .then(items => {
         this.items = items

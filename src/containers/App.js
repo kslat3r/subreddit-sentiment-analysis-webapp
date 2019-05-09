@@ -14,6 +14,7 @@ class App extends React.Component {
     this.onSearchChange = this.onSearchChange.bind(this)
     this.onSearchKeyPress = this.onSearchKeyPress.bind(this)
     this.onLoadMoreClick = this.onLoadMoreClick.bind(this)
+    this.onReset = this.onReset.bind(this)
 
     this.state = {
       searchTerm: ''
@@ -21,7 +22,7 @@ class App extends React.Component {
   }
 
   componentWillMount () {
-    this.props.subredditStore.loadItems()
+    this.props.subredditStore.fetch(0)
   }
 
   onSearchChange (e) {
@@ -40,8 +41,13 @@ class App extends React.Component {
     }
   }
 
+  onReset() {
+    this.setState({ searchTerm: '' })
+    this.props.subredditStore.resetSearch()
+  }
+
   onLoadMoreClick () {
-    this.props.subredditStore.loadMoreItems()
+    this.props.subredditStore.fetch(this.props.subredditStore.offset + 20)
   }
 
   render () {
@@ -59,27 +65,29 @@ class App extends React.Component {
           searchTerm={this.state.searchTerm}
           onChange={this.onSearchChange}
           onKeyPress={this.onSearchKeyPress}
+          onReset={this.onReset}
         />
 
-        {items.length && !item ? (
-          <Subreddits
-            subreddits={items}
-            loading={loading}
-            success={success}
-            error={error}
-            onLoadMoreClick={this.onLoadMoreClick}
-          />
-        ) : null}
+        {!item && items.length ? (
+          <React.Fragment>
+            <Subreddits
+              subreddits={items}
+              loading={loading}
+              success={success}
+              error={error}
+              onLoadMoreClick={this.onLoadMoreClick}
+            />
 
-        {items.length && !item ? (
-          <LoadMore
-            onClick={this.onLoadMoreClick}
-          />
+            <LoadMore
+              onClick={this.onLoadMoreClick}
+            />
+          </React.Fragment>
         ) : null}
 
         {item ? (
           <Subreddit
             subreddit={item}
+            lonely={true}
           />
         ) : null}
       </div>

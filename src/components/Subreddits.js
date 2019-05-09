@@ -33,6 +33,7 @@ class Subreddits extends React.Component {
             <Subreddit
               key={i}
               subreddit={subreddit}
+              lonely={subreddits.length === 1}
             />
           ))}
         </Grid>

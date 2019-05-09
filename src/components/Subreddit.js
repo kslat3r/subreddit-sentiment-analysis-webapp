@@ -16,15 +16,16 @@ class Subreddit extends React.Component {
   render() {
     const {
       classes,
-      subreddit
+      subreddit,
+      lonely
     } = this.props;
 
     return (
       <Grid
         item
         xs={12}
-        md={6}
-        lg={4}
+        md={lonely ? 12 : 6}
+        lg={lonely ? 12 : 4}
       >
         <Card
           className={classes.card}
@@ -46,7 +47,8 @@ class Subreddit extends React.Component {
 
 Subreddit.propTypes = {
   classes: PropTypes.object.isRequired,
-  subreddit: PropTypes.object.isRequired
+  subreddit: PropTypes.object.isRequired,
+  lonely: PropTypes.bool
 };
 
 export default withStyles(styles)(Subreddit);

@@ -7,6 +7,7 @@ import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   root: {
@@ -48,6 +49,11 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  closeIcon: {
+    marginTop: 4,
+    marginLeft: -30,
+    marginRight: 0
+  },
   inputRoot: {
     color: 'inherit',
     width: '100%',
@@ -66,6 +72,9 @@ const styles = theme => ({
       },
     },
   },
+  button: {
+    marginLeft: theme.spacing.unit
+  }
 });
 
 function SearchAppBar(props) {
@@ -73,7 +82,8 @@ function SearchAppBar(props) {
     classes,
     searchTerm,
     onChange,
-    onKeyPress
+    onKeyPress,
+    onReset
   } = props;
 
   return (
@@ -99,6 +109,9 @@ function SearchAppBar(props) {
               onKeyPress={onKeyPress}
             />
           </div>
+          <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+            Reset
+          </Button>
         </Toolbar>
       </AppBar>
     </div>

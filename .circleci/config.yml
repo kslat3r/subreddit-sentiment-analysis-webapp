@@ -2,7 +2,7 @@ version: 2
 jobs:
   deploy:
     docker:
-      - image: google/cloud-sdk
+      - image: boiyaa/google-cloud-sdk-nodejs:9
     steps:
       - checkout
       - setup_remote_docker
@@ -19,7 +19,6 @@ jobs:
           name: Token replace
           command: |
             envsubst < ./.circleci/.env.placeholder > .env
-            cat .env
       - run:
           name: Install
           command: npm i

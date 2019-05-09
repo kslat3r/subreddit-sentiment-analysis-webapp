@@ -3,6 +3,8 @@ jobs:
   deploy:
     docker:
       - image: boiyaa/google-cloud-sdk-nodejs:9
+        environment:
+          STORAGE_BUCKET: ssanalysis
     steps:
       - checkout
       - setup_remote_docker
@@ -25,6 +27,12 @@ jobs:
       - run:
           name: Build
           command: npm run build
+      - run:
+          name: Deploy
+          command: |
+            gsutil defacl ch -u AllUsers:READER gs://$STORAGE_BUCKET
+            gsutil rsync -R ./build gs://$STORAGE_BUCKET
+            gsutil setmeta -h "Cache-Control:private, max-age=0, no-transform" gs://$STORAGE_BUCKET/*.js
 
 workflows:
   version: 2

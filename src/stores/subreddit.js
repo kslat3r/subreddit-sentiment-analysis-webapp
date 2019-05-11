@@ -7,6 +7,18 @@ class SubredditStore {
   @observable requesting = false
   @observable error = false
 
+  mapper (items) {
+    return items.map(item => {
+      item.dates = item.dates.map(date => {
+        date.label = date.created.split('T')[0].split('-').reverse().join('/')
+
+        return date
+      })
+
+      return item
+    })
+  }
+
   @action fetch (offset) {
     this.offset = offset
     this.requesting = true;
@@ -20,7 +32,7 @@ class SubredditStore {
           throw new Error(body.error)
         }
 
-        this.items = this.items.concat(body)
+        this.items = this.mapper(this.items.concat(body))
         this.requesting = false
         this.success = true
         this.error = false
@@ -44,7 +56,7 @@ class SubredditStore {
           throw new Error(body.error)
         }
 
-        this.item = body
+        this.item = this.mapper([body])[0]
         this.requesting = false
         this.success = true
         this.error = false

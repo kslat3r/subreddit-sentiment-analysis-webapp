@@ -1,6 +1,8 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
+import React from 'react'
+import { inject, observer } from 'mobx-react'
 import SearchAppBar from '../components/SearchAppBar'
+import Loading from '../components/Loading'
+import Error from '../components/Error'
 import Subreddits from '../components/Subreddits'
 import LoadMore from '../components/LoadMore'
 import Subreddit from '../components/Subreddit'
@@ -23,6 +25,7 @@ class App extends React.Component {
 
   componentWillMount () {
     this.props.subredditStore.fetch(0)
+    this.props.subredditStore.receive()
   }
 
   onSearchChange (e) {
@@ -54,8 +57,7 @@ class App extends React.Component {
     const {
       items,
       item,
-      loading,
-      success,
+      requesting,
       error
     } = this.props.subredditStore
 
@@ -68,30 +70,38 @@ class App extends React.Component {
           onReset={this.onReset}
         />
 
-        {!item && items.length ? (
+        {requesting && !items.length ? (
+          <Loading />
+        ) : null}
+
+        {error ? (
+          <Error
+            message={error}
+          />
+        ) : null}
+
+        {!item && items.length && !error ? (
           <React.Fragment>
             <Subreddits
               subreddits={items}
-              loading={loading}
-              success={success}
-              error={error}
               onLoadMoreClick={this.onLoadMoreClick}
             />
 
             <LoadMore
               onClick={this.onLoadMoreClick}
+              requesting={requesting}
             />
           </React.Fragment>
         ) : null}
 
-        {item ? (
+        {item && !error ? (
           <Subreddit
             subreddit={item}
             lonely={true}
           />
         ) : null}
       </div>
-    );
+    )
   }
 }
 

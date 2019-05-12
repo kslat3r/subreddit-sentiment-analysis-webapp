@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
+import React from 'react'
+import PropTypes from 'prop-types'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import InputBase from '@material-ui/core/InputBase'
+import { fade } from '@material-ui/core/styles/colorManipulator'
+import { withStyles } from '@material-ui/core/styles'
+import SearchIcon from '@material-ui/icons/Search'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
   root: {
@@ -75,27 +75,42 @@ const styles = theme => ({
   button: {
     marginLeft: theme.spacing.unit
   }
-});
+})
 
-function SearchAppBar(props) {
+const SearchAppBar = props => {
   const {
     classes,
     searchTerm,
     onChange,
     onKeyPress,
     onReset
-  } = props;
+  } = props
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    <div
+      className={classes.root}
+    >
+      <AppBar
+        position="static"
+      >
         <Toolbar>
-          <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            color="inherit"
+            noWrap
+          >
             Subreddit Sentiment Analysis
           </Typography>
-          <div className={classes.grow} />
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
+          <div
+            className={classes.grow}
+          />
+          <div
+            className={classes.search}
+          >
+            <div
+              className={classes.searchIcon}
+            >
               <SearchIcon />
             </div>
             <InputBase
@@ -109,17 +124,22 @@ function SearchAppBar(props) {
               onKeyPress={onKeyPress}
             />
           </div>
-          <Button variant="contained" color="secondary" className={classes.button} onClick={onReset}>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            onClick={onReset}
+          >
             Reset
           </Button>
         </Toolbar>
       </AppBar>
     </div>
-  );
+  )
 }
 
 SearchAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(SearchAppBar);
+export default withStyles(styles)(SearchAppBar)

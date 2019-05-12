@@ -1,75 +1,129 @@
 import { observable, action } from 'mobx';
+import socketIo from 'socket.io-client'
 
 class SubredditStore {
+  socket = null
   @observable items = []
   @observable item = null
   @observable offset = 0
   @observable requesting = false
   @observable error = false
 
-  mapper (items) {
-    return items.map(item => {
-      item.dates = item.dates.map(date => {
+  datesMapper (dates) {
+    return dates.map(date => {
+      if (!date.label) {
         date.label = date.created.split('T')[0].split('-').reverse().join('/')
+      }
 
-        return date
-      })
+      return date
+    })
+  }
+
+  itemsMapper (items) {
+    return items.map(item => {
+      item.dates = this.datesMapper(item.dates)
 
       return item
     })
   }
 
-  @action fetch (offset) {
-    this.offset = offset
-    this.requesting = true;
-    this.success = false;
-    this.error = false
+  receive () {
+    if (!this.socket) {
+      this.socket = socketIo(process.env.REACT_APP_API_HOST)
+    }
 
-    return fetch(`${process.env.REACT_APP_API_HOST}/api/subreddits?offset=${this.offset}`)
-      .then(response => response.json())
-      .then(body => {
-        if (body.error) {
-          throw new Error(body.error)
-        }
+    this.socket.on('averageComputed', data => {
+      const items = []
 
-        this.items = this.mapper(this.items.concat(body))
-        this.requesting = false
-        this.success = true
-        this.error = false
-      })
-      .catch(err => {
-        this.requesting = false
-        this.success = false
-        this.error = err.message
-      })
+      // find in array
+
+      let item = this.items.find(item => item.id === data.subredditId);
+
+      if (item) {
+        items.push(item)
+      }
+
+      // find from single
+
+      item = this.item && this.item.id === data.subredditId ? this.item : null
+
+      if (item) {
+        items.push(item)
+      }
+
+      // loop
+
+      if (items.length) {
+        items.forEach(item => {
+          const date = item.dates.find(date => date.label === data.created.split('T')[0].split('-').reverse().join('/'))
+
+          if (date) {
+            date.average = data.average
+          } else {
+            item.dates.push(this.datesMapper([data])[0])
+          }
+        })
+      }
+    })
   }
 
-  @action search (term) {
-    this.requesting = true
-    this.success = false
+  @action async fetch (offset) {
+    this.offset = offset
+    this.requesting = true;
     this.error = false
 
-    return fetch(`${process.env.REACT_APP_API_HOST}/api/subreddits/${term}`)
-      .then(response => response.json())
-      .then(body => {
-        if (body.error) {
-          throw new Error(body.error)
-        }
+    let response
+    let body
 
-        this.item = this.mapper([body])[0]
-        this.requesting = false
-        this.success = true
-        this.error = false
-      })
-      .catch(err => {
-        this.requesting = false
-        this.success = false
-        this.error = err.message
-      })
+    try {
+      response = await fetch(`${process.env.REACT_APP_API_HOST}/api/subreddits?offset=${this.offset}`)
+      body = await response.json()
+
+      if (body.error) {
+        throw new Error(body.error)
+      }
+    } catch (e) {
+      this.requesting = false
+      this.error = e.message
+
+      return
+    }
+
+    this.items = this.itemsMapper(this.items.concat(body))
+    this.requesting = false
+    this.error = false
+  }
+
+  @action async search (term) {
+    this.requesting = true
+    this.error = false
+
+    let response
+    let body
+
+    try {
+      response = await fetch(`${process.env.REACT_APP_API_HOST}/api/subreddits/${term}`)
+      body = await response.json()
+
+      if (body.error) {
+        throw new Error(body.error)
+      }
+    } catch (e) {
+      this.requesting = false
+      this.error = e.message
+
+      return
+    }
+
+    this.item = this.itemsMapper([body])[0]
+    this.requesting = false
+    this.error = false
   }
 
   @action resetSearch () {
     this.item = null
+    this.requesting = false
+    this.error = false
   }
 }
 

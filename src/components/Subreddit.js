@@ -1,24 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
+import React from 'react'
+import { observer } from 'mobx-react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
 import Chart from './Chart'
 
 const styles = () => ({
   card: {
     overflow: 'hidden'
   }
-});
+})
 
+@observer
 class Subreddit extends React.Component {
   render() {
     const {
       classes,
       subreddit,
       lonely
-    } = this.props;
+    } = this.props
 
     return (
       <Grid
@@ -41,14 +43,14 @@ class Subreddit extends React.Component {
           />
         </Card>
       </Grid>
-    );
+    )
   }
 }
 
 Subreddit.propTypes = {
   classes: PropTypes.object.isRequired,
   subreddit: PropTypes.object.isRequired,
-  lonely: PropTypes.bool
-};
+  lonely: PropTypes.bool.isRequired
+}
 
-export default withStyles(styles)(Subreddit);
+export default withStyles(styles)(Subreddit)

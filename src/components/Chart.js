@@ -1,40 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 
-class Chart extends React.Component {
-  render() {
-    const { data } = this.props;
+const Chart = props => {
+  const { data } = props
 
-    return (
-      <ResponsiveContainer
-        width="98%"
-        height={400}
-      >
-        <LineChart
-          data={data}>
-            <Line
-              type="monotone"
-              dataKey="average"
-              stroke="#8884d8"
-            />
-            <CartesianGrid
-              stroke="#eee"
-            />
-            <XAxis
-              dataKey="label"
-            />
-            <YAxis
-              dataKey="average"
-            />
-        </LineChart>
-      </ResponsiveContainer>
-    );
-  }
+  return (
+    <ResponsiveContainer
+      width="98%"
+      height={400}
+    >
+      <LineChart
+        data={data}>
+          <Line
+            type="monotone"
+            dataKey="average"
+            stroke="#8884d8"
+          />
+          <CartesianGrid
+            stroke="#eee"
+          />
+          <XAxis
+            dataKey="label"
+          />
+          <YAxis
+            dataKey="average"
+          />
+          <Tooltip />
+      </LineChart>
+    </ResponsiveContainer>
+  )
 }
 
 Chart.propTypes = {
   data: PropTypes.array.isRequired
-};
+}
 
-export default Chart;
+export default Chart
